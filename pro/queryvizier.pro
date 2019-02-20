@@ -233,10 +233,12 @@ function Queryvizier, catalog, target, dis, VERBOSE=verbose, CFA=CFA,  $
   keyword = strtrim(strmid(t,0,7),2)
   N = N_elements(t)
 
-  if strmid(keyword[n-1],0,5) EQ '#INFO' then begin      ;Error finding catalog?
-      message,/INF,t[n-1]
-      return, -1
-  endif    
+  ;; DLN 2/20/19, VizieR changed their format so that it always ends with # INFO
+  ;;  and the number of successful matches.  But this code catches it as an error
+  ;if strmid(keyword[n-1],0,5) EQ '#INFO' then begin      ;Error finding catalog?
+  ;    message,/INF,t[n-1]
+  ;    return, -1
+  ;endif    
 
   linecon = where(keyword EQ '#---Lis', Ncon)
   if Ncon GT 0 then remove,linecon, t, keyword
