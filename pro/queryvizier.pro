@@ -1,5 +1,5 @@
 function Queryvizier, catalog, target, dis, VERBOSE=verbose, CFA=CFA,  $
-               CONSTRAINT = constraint, ALLCOLUMNS=allcolumns, SILENT=silent
+               CONSTRAINT = constraint, ALLCOLUMNS=allcolumns, SILENT=silent, count=count
 ;+
 ; NAME: 
 ;   QUERYVIZIER
@@ -143,6 +143,7 @@ function Queryvizier, catalog, target, dis, VERBOSE=verbose, CFA=CFA,  $
 ;-
 
   compile_opt idl2
+  count = 0
   if N_params() LT 2 then begin
        print,'Syntax - info = QueryVizier(catalog, targetname_or_coord, dis,'
        print,'         [/ALLCOLUMNS, /SILENT, /VERBOSE, /CFA, CONSTRAINT= ]'
@@ -334,15 +335,16 @@ function Queryvizier, catalog, target, dis, VERBOSE=verbose, CFA=CFA,  $
  endfor
  
   i0 = max(lcol) + 4  
-  if i0 GT (N_elements(t)-1) then begin 
-       message,'No sources found within specified radius',/INF
+  if i0 GT (N_elements(t)-1) then begin
+       if ~silent then $
+         message,'No sources found within specified radius',/INF
        return, -1
   endif
   
   iend = where( t[i0:*] EQ '', Nend)
   if Nend EQ  0  then iend = N_elements(t) else iend = iend[0] + i0
-  nstar = iend - i0 
-  info = replicate(info, nstar)
+  count = iend - i0 
+  info = replicate(info, count)
 
 ; Find positions of tab characters 
   t = t[i0:iend-1]
