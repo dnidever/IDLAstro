@@ -1,5 +1,6 @@
 function Queryvizier, catalog, target, dis, VERBOSE=verbose, CFA=CFA,  $
-               CONSTRAINT = constraint, ALLCOLUMNS=allcolumns, SILENT=silent, count=count
+               CONSTRAINT = constraint, ALLCOLUMNS=allcolumns, SILENT=silent, $
+               count=count, timeout=timeout
 ;+
 ; NAME: 
 ;   QUERYVIZIER
@@ -163,8 +164,9 @@ function Queryvizier, catalog, target, dis, VERBOSE=verbose, CFA=CFA,  $
  if keyword_set(cfa) then host = "vizier.cfa.harvard.edu" $
                      else host = "vizier.u-strasbg.fr" 
  silent = keyword_set(silent)
+ if n_elements(timeout) eq 0 then timeout=600
  
-  if N_elements(catalog) EQ 0 then $
+ if N_elements(catalog) EQ 0 then $
             message,'ERROR - A catalog name must be supplied as a keyword'
   zparcheck,'QUERYVIZIER',catalog,1,7,0,'Catalog Name'         
   targname = 0b
@@ -227,7 +229,7 @@ function Queryvizier, catalog, target, dis, VERBOSE=verbose, CFA=CFA,  $
   
   oURL = obj_new('IDLnetURL')
   oURL -> SetProperty, URL_Scheme='http',URL_host=host,URL_query=query, $
-                    URL_PATH = path
+                    URL_PATH = path, CONNECT_TIMEOUT=timeout
   result = oURL -> GET(/STRING_ARRAY)
 ; 
   t = strtrim(result)        ;Feb 2018 don't remove leading blanks
